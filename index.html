@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>cumple tesita</title>
+  <style>
+  @font-face {
+
+  font-family: 'v1';
+
+  src: url('Feeling Lovely.ttf')
+}
+
+@font-face {
+  font-family: 'v';
+  src: url('ValentineSoul.ttf')
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: black;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: block;
+  z-index: 0;
+}
+
+.h1 {
+  font-family: "v";
+  color: white;
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 38px;
+  margin: 0;
+  text-align: center;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.gift-container {
+  position: absolute;
+  top: 65%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+}
+
+.gift-box {
+  position: relative;
+  width: 100px;
+  height: 100px;
+}
+
+.box {
+  position: absolute;
+  bottom: 0;
+  width: 100px;
+  height: 80px;
+  background: crimson;
+  border: 2px solid black;
+  z-index: 1;
+  border-radius: 0px 0px 5px 5px;
+}
+
+.lid {
+  position: absolute;
+  top: -10px;
+  left: -5px;
+  width: 110px;
+  height: 30px;
+  background: crimson;
+  z-index: 2;
+  transition: transform 0.8s ease;
+  transform-origin: left bottom;
+  border: 2px solid black;
+  border-bottom: 1px solid black;
+  border-radius: 5px 5px 0px 0px;
+}
+
+/* Listones */
+.ribbon-h, .ribbon-v {
+  position: absolute;
+  background: gold;
+}
+
+.ribbon-h {
+  top: 10px;
+  left: 0;
+  width: 100px;
+  height: 8px;
+}
+
+.ribbon-v {
+  left: 40px;
+  top: 0;
+  width: 20px;
+  height: 80px;
+}
+
+.lid-ribbon.ribbon-h {
+  top: 10px;
+  left: 0;
+  width: 110px;
+}
+
+.lid-ribbon.ribbon-v {
+  top: 0;
+  left: 45px;
+  height: 30px;
+  width: 20px;
+}
+.bow {
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 20px;
+  z-index: 6;
+}
+
+
+/* Lazos triangulares suaves apuntando hacia arriba */
+.bow-left, .bow-right {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  border-bottom: 20px solid gold;
+}
+
+/* Rotación para darle perspectiva */
+.bow-left {
+  left: -10px;
+  transform: rotate(-5deg);
+}
+
+.bow-right {
+  right: -10px;
+  transform: rotate(5deg);
+}
+
+/* Centro del moño */
+.bow-center {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 13px;
+  height: 13px;
+  background: gold;
+  border-radius: 50%;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  z-index: 7;
+}
+
+/* Corazones */
+.heart {
+  position: absolute;
+  font-size: 24px;
+  opacity: 0;
+  z-index: 4;
+  --dx: 0px;
+  --dy: -60px;
+}
+
+@keyframes floatUp {
+  0% {
+    transform: translate(0, 0) scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: translate(var(--dx), var(--dy)) scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(calc(var(--dx) * 1.2), calc(var(--dy) * 1.2)) scale(1);
+    opacity: 0;
+  }
+}
+</style>
+</head>
+<body>
+  
+  <canvas id="fireworks"></canvas>
+  
+<h1 class="h1">FELIZ CUMPLEAÑOS</h1>
+<div class="gift-container" onclick="openGift()">
+  <div class="gift-box">
+    <div class="box">
+      <div class="ribbon-v"></div>
+    </div>
+<div class="lid">
+  <div class="bow">
+    <div class="bow-left"></div>
+    <div class="bow-center"></div>
+    <div class="bow-right"></div>
+  </div>
+  <div class="ribbon-h lid-ribbon"></div>
+  <div class="ribbon-v lid-ribbon"></div>
+</div>
+    <div class="heart" id="heart1">❤️</div>
+    <div class="heart" id="heart2">💖</div>
+    <div class="heart" id="heart3">💘</div>
+  </div>
+</div>
+
+  <script>
+    const canvas = document.getElementById('fireworks');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let fireworks = [];
+
+    function Firework() {
+      this.x = Math.random() * canvas.width;
+      this.y = canvas.height;
+      this.targetY = Math.random() * canvas.height / 2;
+      this.speed = 5 + Math.random() * 2;
+      this.exploded = false;
+      this.particles = [];
+    }
+
+    Firework.prototype.update = function () {
+      this.y -= this.speed;
+      if (this.y <= this.targetY && !this.exploded) {
+        for (let i = 0; i < 80; i++) {
+          this.particles.push(new Particle(this.x, this.y));
+        }
+        this.exploded = true;
+      }
+    };
+
+    function Particle(x, y) {
+      this.x = x;
+      this.y = y;
+      this.angle = Math.random() * 2 * Math.PI;
+      this.speed = 1 + Math.random() * 5;
+      this.radius = 1.5 + Math.random() * 2;
+      this.alpha = 1;
+      this.fadeRate = 0.01 + Math.random() * 0.02;
+      this.gravity = 0.05;
+      this.color = `hsl(${Math.random() * 360}, 100%, 60%)`;
+    }
+
+    Particle.prototype.update = function () {
+      this.x += Math.cos(this.angle) * this.speed;
+      this.y += Math.sin(this.angle) * this.speed + this.gravity;
+      this.alpha -= this.fadeRate;
+    };
+
+    Particle.prototype.draw = function () {
+      ctx.globalAlpha = this.alpha;
+      ctx.fillStyle = this.color;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    };
+
+    function animate() {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      if (Math.random() < 0.04) {
+        fireworks.push(new Firework());
+      }
+
+      fireworks = fireworks.filter(fw => {
+        fw.update();
+        if (!fw.exploded) {
+          ctx.fillStyle = "white";
+          ctx.beginPath();
+          ctx.arc(fw.x, fw.y, 3, 0, 2 * Math.PI);
+          ctx.fill();
+          return true;
+        }
+
+        fw.particles = fw.particles.filter(p => {
+          p.update();
+          if (p.alpha > 0) {
+            p.draw();
+            return true;
+          }
+          return false;
+        });
+
+        return fw.particles.length > 0;
+      });
+
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+    
+ function openGift() {
+  const lid = document.querySelector('.lid');
+  lid.style.transform = 'rotateZ(-20deg) translateY(-10px)';
+
+  const hearts = [
+    { id: 'heart1', dx: '50px', dy: '-10px' },
+    { id: 'heart2', dx: '50px', dy: '-5px' },
+    { id: 'heart3', dx: '50px', dy: '-5px' }
+  ];
+
+  hearts.forEach((heart, i) => {
+    const el = document.getElementById(heart.id);
+    el.style.left = 'calc(60% + -10px)';
+    el.style.top = '-10px';
+    el.style.setProperty('--dx', heart.dx);
+    el.style.setProperty('--dy', heart.dy);
+
+    setTimeout(() => {
+      el.style.animation = 'floatUp 1.5s ease-out forwards';
+    }, 600 + i * 300);
+  });
+
+  setTimeout(() => {
+    window.location.href = "./mensajito.html";
+  }, 3500);
+}
+  </script>
+</body>
+</html>
