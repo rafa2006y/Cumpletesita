@@ -6,6 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>mensajito</title>
     <style>
+    @keyframes strokeColor {
+  0%   { -webkit-text-stroke-color: pink; }
+  25%  { -webkit-text-stroke-color: orange; }
+  50%  { -webkit-text-stroke-color: yellow; }
+  75%  { -webkit-text-stroke-color: lime; }
+  100% { -webkit-text-stroke-color: cyan; }
+}
+
       *,
 *::after,
 *::before {
@@ -51,22 +59,47 @@ body {
   left: 50%;
   transform: translateX(-50%); 
   width: 80%;
-  font-size: 3vh;
+  font-size: 75px;
   opacity: 0;
   animation: fadeIn 4s ease-in-out forwards;
   text-align: center;
   z-index: 1;
+
+  -webkit-text-stroke: 2px pink;
+  animation: fadeIn 4s ease-in-out forwards, strokeColor 3s linear infinite;
+}
+.palpita {
+  font-size: 50px;
+  animation: latido 1s infinite ease-in-out;
+  display: inline-block;
 }
 
+@keyframes latido {
+  0%, 100% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.3);
+  }
+  50% {
+    transform: scale(1);
+  }
+  75% {
+    transform: scale(1.2);
+  }
+}
 .p1 {
   font-family: "v";
   margin-bottom: 180px;
   color: yellow;
   position: absolute;
   margin: 20px;
-  top: 40px;
+  top: 200px;
   z-index: 1;
-  font-size: 18px;
+  font-size: 60px;
+
+  -webkit-text-stroke: 2px pink;
+  animation: strokeColor 3s linear infinite;
 }
 .p2 {
   font-family: "v";
@@ -74,9 +107,12 @@ body {
   color: yellow;
   position: absolute;
   margin: 20px;
-  top: 115px;
+  top: 380px;
   z-index: 1;
-  font-size: 18px;
+  font-size: 60px;
+  
+    -webkit-text-stroke: 2px pink;
+  animation: strokeColor 3s linear infinite;
 }
 .p3 {
   font-family: "v";
@@ -84,9 +120,12 @@ body {
   color: yellow;
   position: absolute;
   margin: 20px;
-  top: 220px;
+  top: 660px;
   z-index: 1;
-  font-size: 18px;
+  font-size: 60px;
+  
+  -webkit-text-stroke: 2px pink;
+  animation: strokeColor 3s linear infinite;
 }
 .p4 {
   font-family: "v";
@@ -94,9 +133,12 @@ body {
   color: yellow;
   position: absolute;
   margin: 20px;
-  top: 330px;
+  top: 940px;
   z-index: 1;
-  font-size: 18px; 
+  font-size: 60px; 
+  
+  -webkit-text-stroke: 2px pink;
+  animation: strokeColor 3s linear infinite;
 }
 .h2 {
   font-family: "v";
@@ -104,9 +146,12 @@ body {
   color: yellow;
   position: absolute;
   margin: 20px;
-  top: 450px;
+  top: 1170px;
   z-index: 1;
-  font-size: 3vh;
+  font-size: 70px;
+
+  -webkit-text-stroke: 2px pink;
+  animation: strokeColor 3s linear infinite;
 }
 @keyframes fadeIn {
   from {
@@ -1702,10 +1747,13 @@ h1 {
   }
 }
     </style>
+    
+    <audio id="bgm" src="videoplayback.mp3" autoplay loop></audio>
+    
       </head>
   <body class="container">
     <h1 class="titulo">
-      Feliz cumpleaños, mi amor bella❤️</h1>
+      Feliz cumpleaños, mi amor bella <span class="palpita">💗</span></h1>
       
       <p class="p1">
         Hoy la luna brilla con más dulzura y
@@ -2036,5 +2084,11 @@ amarte cada día con pasión y delicadeza.
         </div>
       </div>
     </div>
+    <script>
+  window.addEventListener('click', function () {
+    const audio = document.getElementById('bgm');
+    audio.play();
+  }, { once: true });
+</script>
   </body>
 </html>
